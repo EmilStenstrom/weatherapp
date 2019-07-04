@@ -1,22 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Emils Exceptional Weather App!</title>
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet" type="text/css">
-    <style>
-        body {
-            font-family: 'Lato', sans-serif;
-            font-size: 16px;
-        }
-        h1 {
-            font-size: 1.5em;
-            text-align: center;
-            margin: 0;
-        }
-    </style>
+    <meta charset="utf-8">
+    <title>Weather in Liljeholmen, Stockholm</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"></link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js" integrity="sha256-srhz/t0GOrmVGZryG24MVDyFDYZpvUH2+dnJ8FbpGi0=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Liljeholmen, Stockholm</h1>
-    <script type='text/javascript' src='https://darksky.net/widget/graph-bar/59.3074,18.0247/si12/en.js?width=100%&amp;height=280&amp;title=Full Forecast&amp;textColor=333333&amp;bgColor=FFFFFF&amp;transparency=false&amp;skyColor=undefined&amp;fontFamily=Default&amp;customFont=&amp;units=si&amp;timeColor=333333&amp;tempColor=333333&amp;currentDetailsOption=true'></script>
+    <script id="template" type="x-tmpl-mustache">
+        <div class="container">
+            <div class="container-hourly">
+                <div class="labels">
+                    <label class="label_time">kl</label>
+                    {{# future.precipHigh }}
+                        <label class="label_precipprob">
+                            %
+                            <img src="icons/drop.svg" alt="drop" height="10" width="10">
+                        </label>
+                        <label class="label_precipint">
+                            mm
+                            <img src="icons/drop.svg" alt="drop" height="10" width="10">
+                        </label>
+                    {{/ future.precipHigh }}
+                    <label class="label_uv">UV</label>
+                </div>
+                {{# future.hourly }}
+                    <div class="hour {{ hourMarker }} {{ dayMarker }} {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
+                        {{# first_hour_of_day }}
+                            <span class="label_day span{{ day_span }}">
+                                {{# to_day }}{{ time }}{{/ to_day }}
+                            </span>
+                        {{/ first_hour_of_day }}
+                        <div class="color-block">
+                            <div class="time-container">
+                                {{# to_time }}{{ time }}{{/ to_time }}
+                            </div>
+                            <div class="temp-container" style="{{# temp_style }}{{ temperature }}{{/ temp_style }}">
+                                {{& image }}
+                                <div class="temp">
+                                    {{ temperature }}°
+                                </div>
+                            </div>
+                            <div class="precipprob">
+                                {{# precipIntensity }}
+                                    {{# to_percent }}{{ precipProbability }}{{/ to_percent }}
+                                {{/ precipIntensity }}
+                            </div>
+                            <div class="precipint">
+                                {{# precipIntensity }}
+                                    {{ precipIntensity }}
+                                {{/ precipIntensity }}
+                            </div>
+                            <div class="uv-container">
+                                <span class="uv uv{{ uvIndex }}">
+                                    {{ uvIndex }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="sun {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
+                            {{# sunrise }}
+                                <span class="direction">↑</span>
+                                <img src="icons/sunny.svg" height="20" width="20">
+                                {{# to_time }}{{ sunrise }}{{/ to_time }}
+                            {{/ sunrise }}
+                            {{# sunset }}
+                                <span class="direction">↓</span>
+                                <img src="icons/sunny.svg" height="20" width="20">
+                                {{# to_time }}{{ sunset }}{{/ to_time }}
+                            {{/ sunset }}
+                        </div>
+                    </div>
+                {{/ future.hourly }}
+            </div>
+            <p class="footer">Senast uppdaterad {{# to_time }}{{ currently.time }}{{/ to_time }}</p>
+        </div>
+    </script>
+    <script src="script.js"></script>
 </body>
 </html>

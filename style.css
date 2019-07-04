@@ -1,0 +1,143 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+.container {
+    display: inline-block;
+}
+.container-hourly {
+   display: inline-flex;
+   justify-content: center;
+   margin-top: 10px;
+}
+.hour {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    border-left: 1px solid #ccc;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 36px;
+}
+    .hour {}
+        .hour.clear > .color-block {
+            background: rgba(243,173,43,0.1);
+        }
+        .hour.precip > .color-block {
+            background: rgba(44,131,199,0.1);
+        }
+        .hour.night > .color-block {
+            background: rgba(0,0,0,0.05);
+        }
+        .hour > .label_day {
+            background: none;
+        }
+    .hour.first-hour-of-day {
+        border-left: 2px solid #aaa;
+        margin-top: 0;
+        padding-top: 30px;
+    }
+    .label_day {
+        color: #aaa;
+        margin-top: -30px;
+        text-align: left;
+        position: absolute;
+        padding: 0 0.3em;
+        width: 400%;
+    }
+        .label_day.span1 .time,
+        .label_day.span2 .time,
+        .label_day.span3 .time {
+            display: none;
+        }
+    .labels {
+        display: flex;
+        flex-direction: column;
+        color: #aaa;
+        text-align: right;
+        padding-right: 0.3em;
+    }
+        .label_time {
+            margin-top: 35px;
+            flex-grow: 1;
+        }
+        .label_uv {
+            padding-bottom: 9px;
+            margin-bottom: 36px;
+        }
+        .label_precipprob, .label_precipint {
+            font-size: 0.8em;
+            padding-bottom: 10px;
+            white-space: nowrap;
+        }
+    .color-block {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+        .time-container {
+            color: #aaa;
+            padding: 5px;
+        }
+        .temp-container {
+            padding: 20px 0;
+            flex-grow: 1;
+        }
+            .temp {
+                /* font-weight: bold; */
+                margin-top: -5px;
+            }
+        .precipprob, .precipint {
+            color: #2C83C7;
+            font-size: 0.8em;
+            padding-bottom: 10px;
+        }
+        .uv-container {
+            padding-bottom: 10px;
+        }
+            .uv {
+                font-size: 0.9em;
+                padding: 1px 4px;
+                border-radius: 4px;
+            }
+            .uv0, .uv1, .uv2 { background: rgba(64,191,64,.4); }
+            .uv3, .uv4, .uv5 { background: rgba(255,240,0,.4); }
+            .uv6, .uv7 { background: rgba(255,127,0,.3); }
+            .uv8, .uv9, .uv10 { background: rgba(255,0,0,.4); }
+            .uv11 { background: rgba(166,89,255,.55); }
+    .sun {
+        position: absolute;
+        top: 100%;
+        font-size: 0.8em;
+        width: 100%;
+    }
+    .sun.sunrise {
+        border-right: 1px solid #ccc;
+        margin-left: 1px;
+    }
+    .sun.sunset {
+        border-left: 1px solid #ccc;
+        margin-left: -1px;
+    }
+        .sun .direction {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .sun img {
+            display: inline-block;
+            vertical-align: top;
+            margin-left: -5px;
+        }
+        .sun .time {
+            display: block;
+            font-size: 0.9em;
+        }
+.footer {
+    color: #ccc;
+    text-align: right;
+    font-size: 0.8em;
+}
