@@ -23,8 +23,13 @@ def env_or_error(key, _format, default=None):
 
     return value
 
-def check_existing_file(path):
-    if not os.path.isfile(path) or os.path.getsize(path) == 0:
+def check_existing_file(path, debug):
+    if not os.path.isfile(path):
+        log("Fetching new data, file ({path}) does not exist", debug)
+        return
+
+    if os.path.getsize(path) == 0:
+        log("Fetching new data, file exists ({path}), but is empty", debug)
         return
 
     with open(path, "r") as f:
@@ -44,15 +49,22 @@ def check_existing_file(path):
         print(f"Will not fetch, data is less than 1 hour old ({response_dt})")
         sys.exit()
 
+    log(f"Fetching new data, data is old ({response_dt})", debug)
+
     return
 
+def log(message, debug):
+    if debug:
+        print(message)
+
 def main():
+    debug = (env_or_error("DEBUG", r"true", default="false") == "true")
     apikey = env_or_error("APIKEY", r"[a-f0-9]+")
     location = env_or_error("LOCATION", r"^\-?\d+\.\d+,\-?\d+\.\d+?$", default="59.3078312,18.0075784")
     lang = env_or_error("LANGAUGE", r"[a-z]{2}", default="sv")
     weather_path = env_or_error("WEATHER_PATH", r"[\w\\\/]+", default="weather/weather.json")
 
-    check_existing_file(weather_path)
+    check_existing_file(weather_path, debug=debug)
 
     with open(weather_path, "w") as f:
         url = f"https://api.darksky.net/forecast/{apikey}/{location}/?lang={lang}&units=si"
