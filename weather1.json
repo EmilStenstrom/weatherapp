@@ -67,7 +67,7 @@
             {
                 "time": 1561899600,
                 "summary": "Lätt molnighet",
-                "icon": "partly-cloudy-day",
+                "icon": "wind",
                 "precipIntensity": 0,
                 "precipProbability": 0,
                 "temperature": 24,
