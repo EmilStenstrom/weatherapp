@@ -50,8 +50,8 @@ def main():
     apikey = env_or_error("APIKEY", r"[a-f0-9]+")
     location = env_or_error("LOCATION", r"^\-?\d+\.\d+,\-?\d+\.\d+?$", default="59.3078312,18.0075784")
     lang = env_or_error("LANGAUGE", r"[a-z]{2}", default="sv")
+    weather_path = env_or_error("WEATHER_PATH", r"[\w\\\/]+", default="weather/weather.json")
 
-    weather_path = "weather/weather.json"
     check_existing_file(weather_path)
 
     with open(weather_path, "w") as f:
