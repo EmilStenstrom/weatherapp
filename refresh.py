@@ -24,7 +24,7 @@ def env_or_error(key, _format, default=None):
     return value
 
 def check_existing_file(path):
-    if not os.path.isfile(path):
+    if not os.path.isfile(path) or os.path.getsize(path) == 0:
         return
 
     with open(path, "r") as f:
