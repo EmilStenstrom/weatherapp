@@ -149,15 +149,15 @@ function add_image(hourly, daily) {
     var images = {
         "clear-day": "clear.svg",
         "clear-night": "clear.svg",
-        "rain": "rain.svg",
-        "snow": "snow.svg",
-        "sleet": "sleet.svg",
-        "fog": "fog.svg",
         "cloudy": "cloudy.svg",
+        "fog": "fog.svg",
         "partly-cloudy-day": (hourly => (hourly.cloudCover > 0.5? "mostlycloudy.svg": "partlycloudy.svg")),
         // NOTE: "treat partly-cloudy-night as an alias for clear-day"
         // https://darksky.net/dev/docs/faq#icon-selection
         "partly-cloudy-night": "clear.svg",
+        "rain": (hourly => (hourly.precipProbability > 0.5? "rain.svg": "chancerain.svg")),
+        "sleet": (hourly => (hourly.precipProbability > 0.5? "sleet.svg": "chancesleet.svg")),
+        "snow": (hourly => (hourly.precipProbability > 0.5? "snow.svg": "chancesnow.svg")),
     };
 
     var image = "unknown.svg"
