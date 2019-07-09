@@ -158,6 +158,8 @@ function add_image(hourly, daily) {
         "rain": (hourly => (hourly.precipProbability > 0.5? "rain.svg": "chancerain.svg")),
         "sleet": (hourly => (hourly.precipProbability > 0.5? "sleet.svg": "chancesleet.svg")),
         "snow": (hourly => (hourly.precipProbability > 0.5? "snow.svg": "chancesnow.svg")),
+        "thunderstorm": "tstorms.svg",
+        "wind": "wind.svg",
     };
 
     var image = "unknown.svg"
