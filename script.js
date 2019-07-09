@@ -312,4 +312,4 @@ function load_graphs(urls) {
         });
 }
 
-load_graphs(['weather/weather1.json'])
+load_graphs(['weather/weather.json'])
