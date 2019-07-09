@@ -176,7 +176,7 @@ function add_image(hourly, daily) {
 
     // Make large night icon slightly smaller
     if (image == "nt_clear.svg") {
-        hourly.image = '<img class="icon" src="icons/' + image + '" height="30" width="30" style="margin: 20px 10px 0">';
+        hourly.image = '<img class="icon icon-' + icon + '" src="icons/' + image + '" height="30" width="30" style="margin: 20px 10px 0">';
     }
     else {
         hourly.image = '<img class="icon" src="icons/' + image + '" height="50" width="50">';
