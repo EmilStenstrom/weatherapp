@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import urllib.parse
@@ -28,7 +29,7 @@ def main():
     with open("weather/weather.json", "w") as f:
         url = f"https://api.darksky.net/forecast/{apikey}/{location}/?lang={lang}&units=si"
         weather = httpget(url)
-        f.write(weather)
+        f.write(json.dumps(json.loads(weather), indent=4))
 
 if __name__ == '__main__':
     main()
