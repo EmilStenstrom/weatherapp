@@ -288,6 +288,9 @@ function show_weather(weather) {
     );
     document.body.innerHTML += rendered;
 }
+function show_error(error) {
+     document.body.innerHTML += error;
+}
 
 // GET WEATHER DATA FROM LOCAL FILE
 function load_graphs(urls) {
@@ -303,7 +306,10 @@ function load_graphs(urls) {
         .then(function(weather) {
             show_weather(weather);
         })
-        .then(() => load_graphs(urls));
+        .then(() => load_graphs(urls))
+        .catch(function(error) {
+            show_error(error);
+        });
 }
 
 load_graphs(['weather/weather1.json'])
