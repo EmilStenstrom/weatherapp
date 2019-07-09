@@ -306,9 +306,4 @@ function load_graphs(urls) {
         .then(() => load_graphs(urls));
 }
 
-load_graphs([
-    'weather1.json',
-    'weather2.json',
-    'weather3.json',
-    'weather4.json',
-])
+load_graphs(['weather/weather1.json'])
