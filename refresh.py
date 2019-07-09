@@ -26,7 +26,9 @@ def main():
     apikey = env_or_error("APIKEY", r"[a-f0-9]+")
     location = env_or_error("LOCATION", r"^\-?\d+\.\d+,\-?\d+\.\d+?$", default="59.3078312,18.0075784")
     lang = env_or_error("LANGAUGE", r"[a-z]{2}", default="sv")
-    with open("weather/weather.json", "w") as f:
+
+    weather_path = "weather/weather.json"
+    with open(weather_path, "w") as f:
         url = f"https://api.darksky.net/forecast/{apikey}/{location}/?lang={lang}&units=si"
         weather = httpget(url)
         f.write(json.dumps(json.loads(weather), indent=4))
