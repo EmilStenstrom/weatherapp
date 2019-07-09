@@ -4,7 +4,7 @@ import re
 import sys
 import urllib.parse
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 import requests
@@ -39,13 +39,14 @@ def check_existing_file(path, debug):
     local_dt = datetime.now(pytz.utc)
 
     # Get localized date from response
-    response_time = datetime.fromtimestamp(data["currently"]["time"])
     response_tz = pytz.timezone(data["timezone"])
-    response_dt = response_tz.localize(response_time)
+    response_dt = datetime.fromtimestamp(
+        data["currently"]["time"],
+        tz=response_tz,
+    )
 
     # Was the data fetched less than one hour ago?
-    hours_diff = (local_dt - response_dt).total_seconds() / (60*60)
-    if hours_diff < 1:
+    if local_dt < response_dt + timedelta(hours=1):
         print(f"Will not fetch, data is less than 1 hour old ({response_dt})")
         sys.exit()
 
