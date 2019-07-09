@@ -7,11 +7,8 @@ import urllib.request
 from datetime import datetime
 
 import pytz
+import requests
 
-
-def httpget(url):
-    f = urllib.request.urlopen(url)
-    return f.read().decode('utf-8')
 
 def env_or_error(key, _format, default=None):
     if key not in os.environ:
@@ -59,8 +56,9 @@ def main():
 
     with open(weather_path, "w") as f:
         url = f"https://api.darksky.net/forecast/{apikey}/{location}/?lang={lang}&units=si"
-        weather = httpget(url)
-        f.write(json.dumps(json.loads(weather), indent=4))
+        print(f"Fetching new data from: {url}")
+        weather = requests.get(url).json()
+        f.write(json.dumps(weather, indent=4))
 
 if __name__ == '__main__':
     main()
