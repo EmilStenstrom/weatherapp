@@ -318,7 +318,7 @@ function init() {
     // Refresh every whole hour
     var minutes = new Date().getMinutes();
     var next_refresh = (60 - minutes) * 60 * 1000;
-    var randomness = Math.floor(Math.random() * 5) * 60 * 1000;
+    var randomness = Math.floor(Math.random() * 1) * 60 * 1000;
     setTimeout(location.reload, next_refresh + randomness);
 }
 
