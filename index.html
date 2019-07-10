@@ -18,11 +18,11 @@
                     {{# future.precipHigh }}
                         <label class="label_precipprob">
                             %
-                            <img src="icons/drop.svg" alt="drop" height="10" width="10">
+                            <img src="icons/drop.svg?{{ currently.time.getTime }}" alt="drop" height="10" width="10">
                         </label>
                         <label class="label_precipint">
                             mm
-                            <img src="icons/drop.svg" alt="drop" height="10" width="10">
+                            <img src="icons/drop.svg?{{ currently.time.getTime }}" alt="drop" height="10" width="10">
                         </label>
                     {{/ future.precipHigh }}
                     <label class="label_uv">UV</label>
@@ -63,12 +63,12 @@
                         <div class="sun {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
                             {{# sunrise }}
                                 <span class="direction">↑</span>
-                                <img src="icons/sunny.svg" height="20" width="20">
+                                <img src="icons/sunny.svg?{{ currently.time.getTime }}" height="20" width="20">
                                 {{# to_time }}{{ sunrise }}{{/ to_time }}
                             {{/ sunrise }}
                             {{# sunset }}
                                 <span class="direction">↓</span>
-                                <img src="icons/sunny.svg" height="20" width="20">
+                                <img src="icons/sunny.svg?{{ currently.time.getTime }}" height="20" width="20">
                                 {{# to_time }}{{ sunset }}{{/ to_time }}
                             {{/ sunset }}
                         </div>

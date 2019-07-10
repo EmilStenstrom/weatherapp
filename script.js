@@ -115,10 +115,10 @@ function transform_sunrise_and_sunset(daily) {
     return daily;
 }
 
-function transform_hourly(hourly, idx, len, daily) {
+function transform_hourly(hourly, idx, len, daily, currently) {
     hourly = round_temp(hourly);
     hourly = round_precip(hourly);
-    hourly = add_image(hourly, daily);
+    hourly = add_image(hourly, daily, currently);
     hourly = add_hour_marker(hourly, idx);
     hourly = add_first_hour_marker(hourly, idx, len);
     hourly = add_daytime_marker(hourly, daily);
@@ -144,7 +144,7 @@ function round_precip(hourly) {
     );
     return hourly;
 }
-function add_image(hourly, daily) {
+function add_image(hourly, daily, currently) {
     var icon = hourly.icon;
     var images = {
         "clear-day": "clear.svg",
@@ -173,6 +173,9 @@ function add_image(hourly, daily) {
             image = "nt_" + image;
         }
     }
+
+    // Add some cache busting
+    image = image + "?" + currently.time.getTime();
 
     // Make large night icon slightly smaller
     if (image == "nt_clear.svg") {
@@ -236,7 +239,7 @@ function transform_data(weather) {
     )
     var len = today_hourly.length;
     today_hourly = today_hourly.map(
-        (hourly, idx) => transform_hourly(hourly, idx, len, today_daily)
+        (hourly, idx) => transform_hourly(hourly, idx, len, today_daily, weather.currently)
     );
 
     // Tomorrow
@@ -250,7 +253,7 @@ function transform_data(weather) {
     )
     var len = tomorrow_hourly.length;
     tomorrow_hourly = tomorrow_hourly.map(
-        (hourly, idx) => transform_hourly(hourly, idx, len, tomorrow_daily)
+        (hourly, idx) => transform_hourly(hourly, idx, len, tomorrow_daily, weather.currently)
     );
 
     hourly = today_hourly.concat(tomorrow_hourly);
