@@ -8,7 +8,7 @@ function to_date(timestamp) {
 function to_time(date) {
     var hours = ("0" + date.getHours()).substr(-2);
     var minutes = ("0" + date.getMinutes()).substr(-2);
-    var out = hours + ':' + minutes;
+    var out = '<span class="hours">' + hours + '</span>:<span class="minutes">' + minutes + '</span>';
     return '<time class="time" datetime="' + date.toISOString() + '">' + out + "</time>";
 }
 var DAY_NAMES = ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"];

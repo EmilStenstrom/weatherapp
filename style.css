@@ -5,6 +5,8 @@ body {
     font-family: 'Lato', sans-serif;
     font-size: 16px;
     text-align: center;
+    background: black;
+    color: white;
 }
 .container {
     display: inline-block;
@@ -18,7 +20,7 @@ body {
     display: flex;
     position: relative;
     flex-direction: column;
-    border-left: 1px solid #ccc;
+    border-left: 2px solid #333;
     text-align: center;
     margin-top: 30px;
     margin-bottom: 36px;
@@ -37,12 +39,12 @@ body {
             background: none;
         }
     .hour.first-hour-of-day {
-        border-left: 2px solid #aaa;
+        border-left: 3px solid white;
         margin-top: 0;
         padding-top: 30px;
     }
     .label_day {
-        color: #aaa;
+        color: white;
         margin-top: -30px;
         text-align: left;
         position: absolute;
@@ -57,7 +59,7 @@ body {
     .labels {
         display: flex;
         flex-direction: column;
-        color: #aaa;
+        color: white;
         text-align: right;
         padding-right: 0.3em;
     }
@@ -80,9 +82,13 @@ body {
         flex-grow: 1;
     }
         .time-container {
-            color: #aaa;
+            color: white;
             padding: 5px;
         }
+            .time-container .minutes {
+                font-size: 0.7em;
+                color: #ccc;
+            }
         .temp-container {
             padding: 20px 0;
             flex-grow: 1;
@@ -103,12 +109,14 @@ body {
                 font-size: 0.9em;
                 padding: 1px 4px;
                 border-radius: 4px;
+                color: black;
+                font-weight: bold;
             }
-            .uv0, .uv1, .uv2 { background: rgba(64,191,64,.4); }
-            .uv3, .uv4, .uv5 { background: rgba(255,240,0,.4); }
-            .uv6, .uv7 { background: rgba(255,127,0,.3); }
-            .uv8, .uv9, .uv10 { background: rgba(255,0,0,.4); }
-            .uv11 { background: rgba(166,89,255,.55); }
+            .uv0, .uv1, .uv2 { background: rgb(179,229,179); }
+            .uv3, .uv4, .uv5 { background: rgb(255,249,153); }
+            .uv6, .uv7 { background: rgb(255,217,179); }
+            .uv8, .uv9, .uv10 { background: rgb(255,153,153); }
+            .uv11 { background: rgb(206,164,255); }
     .sun {
         position: absolute;
         top: 100%;
@@ -116,11 +124,11 @@ body {
         width: 100%;
     }
     .sun.sunrise {
-        border-right: 1px solid #ccc;
+        border-right: 2px solid #ccc;
         margin-left: 1px;
     }
     .sun.sunset {
-        border-left: 1px solid #ccc;
+        border-left: 2px solid #ccc;
         margin-left: -1px;
     }
         .sun .direction {
