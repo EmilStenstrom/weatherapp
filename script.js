@@ -319,7 +319,7 @@ function init() {
     var minutes = new Date().getMinutes();
     var next_refresh = (60 - minutes) * 60 * 1000;
     var randomness = Math.floor(Math.random() * 1) * 60 * 1000;
-    setTimeout(location.reload, next_refresh + randomness);
+    setTimeout(function() { window.location.reload(); }, next_refresh + randomness);
 }
 
 init();
