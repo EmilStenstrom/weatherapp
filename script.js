@@ -180,7 +180,7 @@ function add_image(hourly, daily, currently) {
     image = image + "?" + currently.time.getTime();
 
     // Make large night icon slightly smaller
-    if (image == "nt_clear.svg") {
+    if (image.indexOf("nt_clear.svg") > -1) {
         hourly.image = '<img class="icon icon-' + icon + '" src="icons/' + image + '" height="30" width="30" style="margin: 20px 10px 0">';
     }
     else {
