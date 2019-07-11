@@ -87,8 +87,11 @@ body {
             padding: 20px 0;
             flex-grow: 1;
         }
+            .icon-clear-night {
+                height: 40px;
+                margin-top: 10px;
+            }
             .temp {
-                /* font-weight: bold; */
                 margin-top: -5px;
             }
         .precipprob, .precipint {

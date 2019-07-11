@@ -180,16 +180,10 @@ function add_image(hourly, daily, currently) {
         }
     }
 
-    // Add some cache busting
-    image = image + "?" + currently.time.getTime();
-
-    // Make large night icon slightly smaller
-    if (image.indexOf("nt_clear.svg") > -1) {
-        hourly.image = '<img class="icon icon-' + icon + '" src="icons/' + image + '" height="30" width="30" style="margin: 20px 10px 0">';
-    }
-    else {
-        hourly.image = '<img class="icon" src="icons/' + image + '" height="50" width="50">';
-    }
+    hourly.image = (
+        '<img class="icon icon-' + icon + '"' +
+        ' src="icons/' + image + '?' + current_time.getTime() + '">'
+    );
     return hourly;
 }
 function add_first_hour_marker(hourly, idx, len) {
