@@ -1,4 +1,6 @@
 // GENERAL HELPERS
+var $ = document.querySelector.bind(document);
+
 function to_date(timestamp) {
     if (typeof timestamp != 'number') {
         throw new Error("timestamp: " + timestamp + " is not an number");
@@ -281,7 +283,6 @@ function transform_data(weather) {
 
 // RENDER DATA USING TEMPLATE
 function show_weather(weather) {
-    var $ = document.querySelector.bind(document);
     var template = $('#template').innerHTML;
     var data = transform_data(weather);
     Mustache.parse(template);
@@ -308,11 +309,20 @@ function load_graphs(urls) {
         })
         .then(function(weather) {
             show_weather(weather);
+            cache_bust(weather.currently.time.getTime());
         })
         .then(() => load_graphs(urls))
         .catch(function(error) {
             show_error(error);
         });
+}
+
+function cache_bust(time) {
+    var style = $("link#main");
+    style.href += "?" + time;
+
+    var script = $("script#main");
+    script.src += "?" + time;
 }
 
 function init() {
