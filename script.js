@@ -5,7 +5,7 @@ function to_date(timestamp) {
     if (typeof timestamp != 'number') {
         throw new Error("timestamp: " + timestamp + " is not an number");
     }
-    return new Date(timestamp * 1000)
+    return new Date(timestamp * 1000);
 }
 function to_time(date) {
     var hours = ("0" + date.getHours()).substr(-2);
