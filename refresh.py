@@ -46,7 +46,7 @@ def check_existing_file(path, debug):
     )
 
     # Was the data fetched less than one hour ago?
-    if local_dt < response_dt + timedelta(hours=1):
+    if local_dt < response_dt + timedelta(minutes=59):
         print(f"Will not fetch, data is less than 1 hour old ({response_dt})")
         sys.exit()
 
