@@ -70,7 +70,7 @@ function is_daytime(current_hour, sunriseTime, sunsetTime) {
 function template_helpers(weather) {
     return {
         "to_day": function() {
-            var today = weather.currently.time;
+            var today = weather.current_time;
             return function(text, render) {
                 var date = new Date(render(text));
                 var day = to_day(date);
@@ -123,10 +123,10 @@ function transform_sunrise_and_sunset(daily) {
     return daily;
 }
 
-function transform_hourly(hourly, idx, len, daily, currently) {
+function transform_hourly(hourly, idx, len, daily, current_time) {
     hourly = round_temp(hourly);
     hourly = round_precip(hourly);
-    hourly = add_image(hourly, daily, currently);
+    hourly = add_image(hourly, daily, current_time);
     hourly = add_hour_marker(hourly, idx);
     hourly = add_first_hour_marker(hourly, idx, len);
     hourly = add_daytime_marker(hourly, daily);
@@ -152,7 +152,7 @@ function round_precip(hourly) {
     );
     return hourly;
 }
-function add_image(hourly, daily, currently) {
+function add_image(hourly, daily, current_time) {
     var icon = hourly.icon;
     var images = {
         "clear-day": "clear.svg",
@@ -223,37 +223,41 @@ function add_sunset_and_sunrise_marker(hourly, daily) {
 }
 
 function transform_data(weather) {
-    weather.currently.time = to_date(weather.currently.time);
+    var weather = Object.assign({}, weather);
+    var current_time = to_date(weather.currently.time);
 
-    // Transform timestamp to Date to simplify code later
-    var hourly_data = weather.hourly.data;
+    // Transform timestamp to Date first, to simplify code later
+    var current_data = Object.assign({}, weather.currently);
+    current_data = transform_time(current_data);
+    var hourly_data = Array.from(weather.hourly.data);
     for (hourly of hourly_data) {
         hourly = transform_time(hourly);
     }
+    var daily_data = Array.from(weather.daily.data);
+    var today_daily = transform_daily(daily_data[0]);
 
     // Today
-    var today_daily = transform_daily(weather.daily.data[0]);
-    var today_hourly = Array.from(weather.hourly.data);
+    var today_hourly = Array.from(hourly_data);
     today_hourly = today_hourly.filter(
-        hourly => is_same_day(weather.currently.time, hourly.time)
+        hourly => is_same_day(current_time, hourly.time)
     )
     var len = today_hourly.length;
     today_hourly = today_hourly.map(
-        (hourly, idx) => transform_hourly(hourly, idx, len, today_daily, weather.currently)
+        (hourly, idx) => transform_hourly(hourly, idx, len, today_daily, current_time)
     );
 
     // Tomorrow
-    var tomorrow = new Date(weather.currently.time);
+    var tomorrow = new Date(current_time);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    var tomorrow_daily = transform_daily(weather.daily.data[1]);
-    var tomorrow_hourly = Array.from(weather.hourly.data);
+    var tomorrow_daily = transform_daily(daily_data[1]);
+    var tomorrow_hourly = Array.from(hourly_data);
     tomorrow_hourly = tomorrow_hourly.filter(
         hourly => is_same_day(tomorrow, hourly.time)
     )
     var len = tomorrow_hourly.length;
     tomorrow_hourly = tomorrow_hourly.map(
-        (hourly, idx) => transform_hourly(hourly, idx, len, tomorrow_daily, weather.currently)
+        (hourly, idx) => transform_hourly(hourly, idx, len, tomorrow_daily, current_time)
     );
 
     hourly = today_hourly.concat(tomorrow_hourly);
@@ -262,6 +266,7 @@ function transform_data(weather) {
     return {
         "currently": weather.currently,
         "cache_bust": current_time.getTime(),
+        "current_time": current_time,
         "future": {
             "temperatureHigh": Math.max(...hourly.map(
                 hourly_data => hourly_data.temperature
