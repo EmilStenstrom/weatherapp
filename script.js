@@ -112,6 +112,12 @@ function transform_daily(daily) {
     return daily;
 }
 function transform_sunrise_and_sunset(daily) {
+    if (typeof daily.sunriseTime != 'number') {
+        throw new Error("daily.sunriseTime: " + daily.sunriseTime + " is a " + typeof daily.sunriseTime + " not an number");
+    }
+    if (typeof daily.sunsetTime != 'number') {
+        throw new Error("daily.sunsetTime: " + daily.sunsetTime + " is a " + typeof daily.sunsetTime + " not an number");
+    }
     daily.sunriseTime = to_date(daily.sunriseTime);
     daily.sunsetTime = to_date(daily.sunsetTime);
     return daily;
