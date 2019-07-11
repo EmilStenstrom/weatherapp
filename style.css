@@ -25,25 +25,13 @@ body {
     margin-top: 30px;
     margin-bottom: 36px;
 }
-    .hour {}
-        .hour.clear > .color-block {
-            background: rgba(243,173,43,0.1);
-        }
-        .hour.precip > .color-block {
-            background: rgba(44,131,199,0.1);
-        }
-        .hour.night > .color-block {
-            background: rgba(0,0,0,0.05);
-        }
-        .hour > .label_day {
-            background: none;
-        }
     .hour.first-hour-of-day {
         border-left: 3px solid white;
         margin-top: 0;
         padding-top: 30px;
     }
     .label_day {
+        background: none;
         color: white;
         margin-top: -30px;
         text-align: left;
