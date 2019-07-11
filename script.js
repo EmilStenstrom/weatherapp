@@ -306,8 +306,8 @@ function load_graphs(urls) {
             return response.json();
         })
         .then(function(weather) {
+            cache_bust(weather.currently.time);
             show_weather(weather);
-            cache_bust(weather.currently.time.getTime());
         })
         .then(() => load_graphs(urls))
         .catch(function(error) {
