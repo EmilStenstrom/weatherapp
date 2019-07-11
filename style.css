@@ -8,8 +8,14 @@ body {
     background: black;
     color: white;
 }
+::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome */
+}
 .container {
     display: inline-block;
+    overflow: scroll;
+    width: 100%;
+    scrollbar-width: none; /* Hide scrollbar i Fx */
 }
 .container-hourly {
    display: inline-flex;
