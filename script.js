@@ -330,11 +330,14 @@ function init() {
 
     // Refresh every whole hour
     var minutes = new Date().getMinutes();
-    var next_refresh = (60 - minutes) * 60 * 1000;
+    var next_refresh = (60 - minutes);
     // Add one minute to ensure server refresh is done, and add some
     // randomness to avoid thundering herd performance issues
-    var randomness = 1000 + Math.floor(Math.random() * 1) * 60 * 1000;
-    setTimeout(function() { window.location.reload(); }, next_refresh + randomness);
+    var extra_minutes = 1 + Math.floor(Math.random() * 1)
+    setTimeout(
+        function() { window.location.reload(); },
+        (next_refresh + extra_minutes) * 60 * 1000
+    );
 }
 
 init();
