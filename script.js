@@ -3,7 +3,7 @@ var $ = document.querySelector.bind(document);
 
 function to_date(timestamp) {
     if (typeof timestamp != 'number') {
-        throw new Error("timestamp: " + timestamp + " is not an number");
+        throw new Error("timestamp: " + timestamp + " is a " + typeof timestamp + " not an number");
     }
     return new Date(timestamp * 1000);
 }
@@ -29,10 +29,10 @@ function to_percent(decimal) {
 }
 function is_same_day(date1, date2) {
     if (typeof date1.getMonth !== 'function') {
-        throw "date1: " + date1 + " is not an Date";
+        throw new Error("date1: " + date1 + " is not an Date");
     }
     if (typeof date2.getMonth !== 'function') {
-        throw "date2: " + date2 + " is not an Date";
+        throw new Error("date2: " + date2 + " is not an Date");
     }
     return (
         date1.getFullYear() == date2.getFullYear() &&
@@ -48,13 +48,13 @@ function is_same_hour(date1, date2) {
 }
 function is_daytime(current_hour, sunriseTime, sunsetTime) {
     if (typeof current_hour.getMonth !== 'function') {
-        throw "current_hour: " + current_hour + " is not an Date";
+        throw new Error("current_hour: " + current_hour + " is not an Date");
     }
     if (typeof sunriseTime.getMonth !== 'function') {
-        throw "sunriseTime: " + sunriseTime + " is not an Date";
+        throw new Error("sunriseTime: " + sunriseTime + " is not an Date");
     }
     if (typeof sunsetTime.getMonth !== 'function') {
-        throw "sunsetTime: " + sunsetTime + " is not an Date";
+        throw new Error("sunsetTime: " + sunsetTime + " is not an Date");
     }
 
     var next_hour = new Date(current_hour);
@@ -129,7 +129,7 @@ function transform_hourly(hourly, idx, len, daily, currently) {
 }
 function transform_time(hourly) {
     if (typeof hourly.time != 'number') {
-        throw new Error("hourly.time: " + hourly.time + " is not an number");
+        throw new Error("hourly.time: " + hourly.time + " is a " + typeof hourly.time + " not an number");
     }
     hourly.time = to_date(hourly.time);
     return hourly;
