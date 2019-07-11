@@ -10,7 +10,7 @@ This repo generates the below widget from weather data. This type of widget is c
 2. When the static `index.html` file is loaded, it makes a request using [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) to `weather.json`
 3. The JSON file is passed through `transform_data` towards a format that can be used in a template
 4. A [mustache](https://mustache.github.io/) template converts the transformed data to HTML
-5. The index.html file reloads itsel every hour to reflect the newly loaded `weather.json`
+5. The index.html file reloads itself every hour to reflect the newly loaded `weather.json`
 
 # Design choices
 
