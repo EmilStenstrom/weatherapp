@@ -25,6 +25,7 @@ body {
     grid-template-columns: auto auto 15em;
     justify-items: center;
     align-items: center;
+    margin-top: 10px;
 }
     .current-time {
         grid-area: time;
@@ -58,7 +59,7 @@ body {
 /* FUTURE */
 .container-hourly {
    display: flex;
-   margin-top: 30px;
+   margin-top: 15px;
 }
 .hour {
     display: flex;
