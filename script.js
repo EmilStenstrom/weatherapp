@@ -336,6 +336,9 @@ function load_graphs(urls) {
             cache_bust(weather.currently.time);
             show_weather(weather);
         })
+        .then(function(){
+            init_clock();
+        })
         .then(() => load_graphs(urls))
         .catch(function(error) {
             show_error(error);
@@ -347,6 +350,15 @@ function cache_bust(time) {
 
     var script = $("script#main");
     script.src += "?" + time;
+}
+function init_clock() {
+    function update_clock() {
+        var date = new Date();
+        var [hours, minutes] = to_time(date);
+        $(".clock").innerHTML = hours + ":" + minutes;
+    }
+    update_clock();
+    setInterval(update_clock, 5000);
 }
 function reload_hourly() {
     // Refresh every whole hour
