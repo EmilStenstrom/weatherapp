@@ -330,7 +330,6 @@ function load_graphs(urls) {
             show_error(error);
         });
 }
-
 function cache_bust(time) {
     var style = $("link#main");
     style.href += "?" + time;
@@ -338,10 +337,7 @@ function cache_bust(time) {
     var script = $("script#main");
     script.src += "?" + time;
 }
-
-function init() {
-    load_graphs(['weather/weather.json'])
-
+function reload_hourly() {
     // Refresh every whole hour
     var minutes = new Date().getMinutes();
     var next_refresh = (60 - minutes);
@@ -352,6 +348,11 @@ function init() {
         function() { window.location.reload(); },
         (next_refresh + extra_minutes) * 60 * 1000
     );
+}
+
+function init() {
+    load_graphs(['weather/weather.json'])
+    reload_hourly();
 }
 
 window.onload = init;
