@@ -160,6 +160,7 @@ function round_precip(hourly) {
 }
 function add_image(hourly, daily, current_time) {
     var icon = hourly.icon;
+    var summary = hourly.summary;
     var images = {
         "clear-day": "clear.svg",
         "clear-night": "clear.svg",
@@ -187,8 +188,11 @@ function add_image(hourly, daily, current_time) {
     }
 
     hourly.image = (
-        '<img class="icon icon-' + icon + '"' +
-        ' src="icons/' + image + '?' + current_time.getTime() + '">'
+        '<img ' +
+            'class="icon icon-' + icon + '" ' +
+            'src="icons/' + image + '?' + current_time.getTime() + '"' +
+            'alt="' + summary + '"' +
+        '>'
     );
     return hourly;
 }
