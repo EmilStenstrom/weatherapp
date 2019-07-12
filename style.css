@@ -17,10 +17,48 @@ body {
     width: 100%;
     scrollbar-width: none; /* Hide scrollbar i Fx */
 }
+
+/* CURRENT */
+.contanier-currently {
+    display: inline-grid;
+    grid-template-areas: "icon  temperature  time";
+    grid-template-columns: auto auto 15em;
+    justify-items: center;
+    align-items: center;
+}
+    .current-time {
+        grid-area: time;
+    }
+        .current-time .clock {
+            display: block;
+            font-size: 4em;
+            color: #F3A81D;
+        }
+    .currrent-summary {
+        grid-area: summary;
+    }
+    .current-icon {
+        grid-area: icon;
+        height: 110px;
+        width: 110px;
+        display: inline-block;
+    }
+    .current-temperature {
+        grid-area: temperature;
+    }
+        .current-temperature .temperature {
+            font-size: 2em;
+        }
+        .current-temperature .temperature-span {
+            font-weight: bold;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+/* FUTURE */
 .container-hourly {
-   display: inline-flex;
-   justify-content: center;
-   margin-top: 10px;
+   display: flex;
+   margin-top: 30px;
 }
 .hour {
     display: flex;

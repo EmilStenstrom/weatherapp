@@ -13,6 +13,24 @@
 <body>
     <script id="template" type="x-tmpl-mustache">
         <div class="container">
+            <div class="contanier-currently">
+                {{# current }}
+                    <div class="current-time">
+                        {{# to_day }}{{ time }}{{/ to_day }}
+                    </div>
+                    <div class="current-icon">
+                        {{& image }}
+                    </div>
+                    <div class="current-temperature">
+                        <div class="temperature">
+                            {{ temperature }}°
+                        </div>
+                        <div class="temperature-span">
+                            ({{ current.temperatureLow }}° - {{ current.temperatureHigh }}°)
+                        </div>
+                    </div>
+                {{/ current }}
+            </div>
             <div class="container-hourly">
                 <div class="labels">
                     <label class="label_time">kl</label>
