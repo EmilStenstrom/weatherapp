@@ -30,11 +30,6 @@
                 </div>
                 {{# future.hourly }}
                     <div class="hour {{ hourMarker }} {{ dayMarker }} {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
-                        {{# first_hour_of_day }}
-                            <span class="label_day span{{ day_span }}">
-                                {{# to_day }}{{ time }}{{/ to_day }}
-                            </span>
-                        {{/ first_hour_of_day }}
                         <div class="color-block">
                             <div class="time-container">
                                 {{# to_time }}{{ time }}{{/ to_time }}
