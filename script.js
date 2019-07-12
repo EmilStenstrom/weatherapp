@@ -10,19 +10,21 @@ function to_date(timestamp) {
 function to_time(date) {
     var hours = ("0" + date.getHours()).substr(-2);
     var minutes = ("0" + date.getMinutes()).substr(-2);
-    var out = '<span class="hours">' + hours + '</span>:<span class="minutes">' + minutes + '</span>';
-    return '<time class="time" datetime="' + date.toISOString() + '">' + out + "</time>";
+    return [hours, minutes];
 }
+
 var DAY_NAMES = ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"];
 var MONTHS = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"];
 
 function to_day(date) {
-    var out = (
+    var [hours, minutes] = to_time(date);
+    var time = hours + ":" + minutes;
+    var day = (
+        DAY_NAMES[date.getDay()] + ", " +
         date.getDate() + " " +
-        MONTHS[date.getMonth()].toLowerCase() +
-        " (" + DAY_NAMES[date.getDay()].toLowerCase() + ")"
+        MONTHS[date.getMonth()].toLowerCase()
     );
-    return '<time class="time" datetime="' + date.toISOString() + '">' + out + "</time>";
+    return [time, day];
 }
 function to_percent(decimal) {
     return (decimal * 100 + "").substr(0, 2) + "%";
@@ -73,17 +75,21 @@ function template_helpers(weather) {
             var today = weather.current_time;
             return function(text, render) {
                 var date = new Date(render(text));
-                var day = to_day(date);
-                if (is_same_day(date, today)) {
-                    return "Idag " + day;
-                }
-                return "Imorgon " + day;
+                var [time, day] = to_day(date);
+                return (
+                    '<time class="time" datetime="' + date.toISOString() + '">' +
+                        '<span class="clock">' + time + '</span>' +
+                        '<span class="day">' + day + '</span>' +
+                    '</time>'
+                );
             }
         },
         "to_time": function() {
             return function(text, render) {
                 var date = new Date(render(text));
-                return to_time(date);
+                var [hours, minutes] = to_time(date);
+                var out = '<span class="hours">' + hours + '</span>:<span class="minutes">' + minutes + '</span>';
+                return '<time class="time" datetime="' + date.toISOString() + '">' + out + "</time>";
             }
         },
         "to_percent": function() {
