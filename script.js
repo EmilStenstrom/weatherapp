@@ -355,7 +355,11 @@ function init_clock() {
     function update_clock() {
         var date = new Date();
         var [hours, minutes] = to_time(date);
-        $(".clock").innerHTML = hours + ":" + minutes;
+        var new_time_str = hours + ":" + minutes;
+        var old_time_str = $(".clock").innerHTML.trim();
+        if (new_time_str != old_time_str) {
+            $(".clock").innerText = new_time_str;
+        }
     }
     update_clock();
     setInterval(update_clock, 5000);
