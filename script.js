@@ -317,8 +317,31 @@ function show_weather(weather) {
     );
     document.body.innerHTML += rendered;
 }
+
+// Harmoize stack trace between Firefox and Chrome
 function show_error(error) {
-     document.body.innerHTML += error;
+    var error_str = error.stack;
+    if (!error_str.startsWith(error)) {
+        error_str = error + '\n' + error_str;
+    }
+
+    var out = "";
+    for (line of error_str.split("\n")) {
+        line = line.trim();
+        if (!line) { continue; }
+
+        if (!line.startsWith("at ")) {
+            line = "at " + line;
+        }
+        out += '\t' + line + '\n';
+    }
+    out = out.trim().replace("at ", "", 1);
+
+    document.body.innerHTML += (
+        '<pre style="text-align: left; font-family: Lato">' +
+            out +
+        '</pre>'
+    );
 }
 
 // GET WEATHER DATA FROM LOCAL FILE
