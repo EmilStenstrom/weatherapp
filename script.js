@@ -8,6 +8,9 @@ function to_date(timestamp) {
     return new Date(timestamp * 1000);
 }
 function to_time(date) {
+    if (typeof date.getHours != 'function') {
+        throw new Error("date: " + date + " is a " + typeof date + " not an Date");
+    }
     var hours = ("0" + date.getHours()).substr(-2);
     var minutes = ("0" + date.getMinutes()).substr(-2);
     return [hours, minutes];
@@ -17,6 +20,9 @@ var DAY_NAMES = ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", 
 var MONTHS = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"];
 
 function to_day(date) {
+    if (typeof date.getHours != 'function') {
+        throw new Error("date: " + date + " is a " + typeof date + " not an Date");
+    }
     var [hours, minutes] = to_time(date);
     var time = hours + ":" + minutes;
     var day = (
@@ -365,6 +371,7 @@ function load_graphs(urls) {
         .then(() => load_graphs(urls))
         .catch(function(error) {
             show_error(error);
+            console.error(error);
         });
 }
 function cache_bust(time) {
