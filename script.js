@@ -280,6 +280,12 @@ function transform_data(weather) {
         "cache_bust": current_time.getTime(),
         "current": {
             "time": current_time,
+            "temperatureHigh": Math.max(...today_hourly.map(
+                data => data.temperature
+            )),
+            "temperatureLow": Math.min(...today_hourly.map(
+                data => data.temperature
+            )),
             ...current_data,
         },
         "future": {
