@@ -244,7 +244,10 @@ function transform_data(weather) {
         hourly = transform_time(hourly);
     }
     var daily_data = Array.from(weather.daily.data);
+
+    // Currently
     var today_daily = transform_daily(daily_data[0]);
+    var current_data = transform_hourly(current_data, 0, 1, today_daily, current_time)
 
     // Today
     var today_hourly = Array.from(hourly_data);
@@ -274,9 +277,11 @@ function transform_data(weather) {
     hourly = hourly.slice(0, 24);
 
     return {
-        "currently": weather.currently,
         "cache_bust": current_time.getTime(),
-        "current_time": current_time,
+        "current": {
+            "time": current_time,
+            ...current_data,
+        },
         "future": {
             "temperatureHigh": Math.max(...hourly.map(
                 hourly_data => hourly_data.temperature
