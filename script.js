@@ -193,9 +193,10 @@ function add_image(hourly, daily, current_time) {
         }
     }
 
+    image_name = image.replace(".svg", "").replace("_", "-");
     hourly.image = (
         '<img ' +
-            'class="icon icon-' + icon + '" ' +
+            'class="icon icon-' + image_name + '" ' +
             'src="icons/' + image + '?' + current_time.getTime() + '"' +
             'alt="' + summary + '"' +
         '>'
