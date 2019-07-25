@@ -109,11 +109,11 @@ body {
             padding: 20px 0;
             flex-grow: 1;
         }
-            .icon-nt-clear {
+            .temp-container .icon-nt-clear {
                 height: 40px;
                 margin-top: 5px;
             }
-            .temp {
+            .temp-container .temp {
                 margin-top: -5px;
             }
         .precipprob, .precipint {
