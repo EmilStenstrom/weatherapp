@@ -23,6 +23,7 @@ body {
     display: inline-grid;
     grid-template-areas: "icon  temperature  clock"
                          "icon  temperature  day";
+    grid-template-rows: 1fr auto;
     grid-template-columns: auto auto 15em;
     justify-items: center;
     align-items: center;
@@ -46,6 +47,7 @@ body {
         display: block;
         font-size: 4em;
         color: #F3A81D;
+        margin-bottom: -0.3em;
     }
     .current-day {
         grid-area: day;
