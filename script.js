@@ -23,14 +23,12 @@ function to_day(date) {
     if (typeof date.getHours != 'function') {
         throw new Error("date: " + date + " is a " + typeof date + " not an Date");
     }
-    var [hours, minutes] = to_time(date);
-    var time = hours + ":" + minutes;
     var day = (
         DAY_NAMES[date.getDay()] + ", " +
         date.getDate() + " " +
         MONTHS[date.getMonth()].toLowerCase()
     );
-    return [time, day];
+    return day;
 }
 function to_percent(decimal) {
     return (decimal * 100 + "").substr(0, 2) + "%";
@@ -81,11 +79,10 @@ function template_helpers(weather) {
             var today = weather.current_time;
             return function(text, render) {
                 var date = new Date(render(text));
-                var [time, day] = to_day(date);
+                var day = to_day(date);
                 return (
                     '<time class="time" datetime="' + date.toISOString() + '">' +
-                        '<span class="clock">' + time + '</span>' +
-                        '<span class="day">' + day + '</span>' +
+                        day +
                     '</time>'
                 );
             }
@@ -384,12 +381,13 @@ function cache_bust(time) {
 }
 function init_clock() {
     function update_clock() {
+        var clock = $(".current-clock");
         var date = new Date();
         var [hours, minutes] = to_time(date);
         var new_time_str = hours + ":" + minutes;
-        var old_time_str = $(".clock").innerHTML.trim();
+        var old_time_str = clock.innerHTML.trim();
         if (new_time_str != old_time_str) {
-            $(".clock").innerText = new_time_str;
+            clock.innerText = new_time_str;
         }
     }
     update_clock();

@@ -21,23 +21,13 @@ body {
 /* CURRENT */
 .contanier-currently {
     display: inline-grid;
-    grid-template-areas: "icon  temperature  time";
+    grid-template-areas: "icon  temperature  clock"
+                         "icon  temperature  day";
     grid-template-columns: auto auto 15em;
     justify-items: center;
     align-items: center;
     margin-top: 10px;
 }
-    .current-time {
-        grid-area: time;
-    }
-        .current-time .clock {
-            display: block;
-            font-size: 4em;
-            color: #F3A81D;
-        }
-    .currrent-summary {
-        grid-area: summary;
-    }
     .current-icon {
         grid-area: icon;
         height: 110px;
@@ -46,15 +36,20 @@ body {
     }
     .current-temperature {
         grid-area: temperature;
+        font-size: 4em;
     }
-        .current-temperature .temperature {
-            font-size: 2em;
-        }
-        .current-temperature .temperature-span {
-            font-weight: bold;
-            font-size: 0.8em;
-            color: #999;
-        }
+    .current-temperature-span {
+        grid-area: temperature-span;
+    }
+    .current-clock {
+        grid-area: clock;
+        display: block;
+        font-size: 4em;
+        color: #F3A81D;
+    }
+    .current-day {
+        grid-area: day;
+    }
 
 /* FUTURE */
 .container-hourly {

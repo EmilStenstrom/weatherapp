@@ -15,19 +15,17 @@
         <div class="container">
             <div class="contanier-currently">
                 {{# current }}
-                    <div class="current-time">
+                    <div class="current-clock">
+                        {{# to_time }}{{ time }}{{/ to_time }}
+                    </div>
+                    <div class="current-day">
                         {{# to_day }}{{ time }}{{/ to_day }}
                     </div>
                     <div class="current-icon">
                         {{& image }}
                     </div>
                     <div class="current-temperature">
-                        <div class="temperature">
-                            {{ temperature }}°
-                        </div>
-                        <div class="temperature-span">
-                            ({{ current.temperatureLow }}° - {{ current.temperatureHigh }}°)
-                        </div>
+                        {{ temperature }}°
                     </div>
                 {{/ current }}
             </div>
