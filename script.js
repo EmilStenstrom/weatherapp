@@ -407,7 +407,7 @@ function reload_hourly() {
 }
 
 function init() {
-    load_graphs(['weather/weather.json'])
+    load_graphs(['weather/weather.json?' + Math.random()])
     reload_hourly();
 }
 
