@@ -2,8 +2,6 @@ import json
 import os
 import re
 import sys
-import urllib.parse
-import urllib.request
 from datetime import datetime, timedelta
 
 import pytz
