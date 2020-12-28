@@ -64,8 +64,9 @@ def main():
     weather_path = env_or_error("WEATHER_PATH", r"[\w\\\/]+", default="weather/weather.json")
 
     check_existing_file(weather_path, debug=debug)
+    os.makedirs(os.path.dirname(weather_path), exist_ok=True)
 
-    with open(weather_path, "w") as f:
+    with open(weather_path, "w+") as f:
         url = f"https://api.darksky.net/forecast/{apikey}/{location}/?lang={lang}&units=si"
         print(f"Fetching new data from: {url}")
         weather = requests.get(url).json()
