@@ -33,6 +33,10 @@ def check_existing_file(path, debug):
     with open(path, "r") as f:
         data = json.load(f)
 
+    if "error" in data:
+        log("Error in last fetched data, try again", debug)
+        return
+
     # Get local time in UTC
     local_dt = datetime.now(pytz.utc)
 
