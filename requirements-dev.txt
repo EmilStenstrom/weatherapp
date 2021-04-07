@@ -4,19 +4,37 @@
 #
 #    pip-compile requirements-dev.in
 #
-certifi==2020.6.20        # via requests
-chardet==3.0.4            # via requests
-click==7.1.2              # via pip-tools
-flake8==3.8.3             # via -r requirements-dev.in
-idna==2.10                # via requests
-mccabe==0.6.1             # via flake8
-pip-tools==5.3.1          # via -r requirements-dev.in
-pycodestyle==2.6.0        # via flake8
-pyflakes==2.2.0           # via flake8
-pytz==2020.1              # via -r requirements.in
-requests==2.24.0          # via -r requirements.in
-six==1.15.0               # via pip-tools
-urllib3==1.25.10          # via requests
+certifi==2020.12.5
+    # via requests
+chardet==4.0.0
+    # via requests
+click==7.1.2
+    # via pip-tools
+flake8==3.9.0
+    # via -r requirements-dev.in
+gunicorn==20.1.0
+    # via -r requirements.in
+idna==2.10
+    # via requests
+mccabe==0.6.1
+    # via flake8
+pep517==0.10.0
+    # via pip-tools
+pip-tools==6.0.1
+    # via -r requirements-dev.in
+pycodestyle==2.7.0
+    # via flake8
+pyflakes==2.3.1
+    # via flake8
+pytz==2021.1
+    # via -r requirements.in
+requests==2.25.1
+    # via -r requirements.in
+toml==0.10.2
+    # via pep517
+urllib3==1.26.4
+    # via requests
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
+# setuptools
