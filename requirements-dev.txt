@@ -32,7 +32,7 @@ requests==2.25.1
     # via -r requirements.in
 toml==0.10.2
     # via pep517
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 
 # The following packages are considered to be unsafe in a requirements file:
