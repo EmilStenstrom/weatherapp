@@ -337,7 +337,6 @@ function load_graphs(urls) {
             return response.json();
         })
         .then(function(weather) {
-            cache_bust(weather.approvedTime);
             show_weather(weather);
         })
         .then(function(){
@@ -348,13 +347,6 @@ function load_graphs(urls) {
             show_error(error);
             console.error(error);
         });
-}
-function cache_bust(time) {
-    var style = $("link#main");
-    style.href += "?" + time;
-
-    var script = $("script#main");
-    script.src += "?" + time;
 }
 function init_clock() {
     function update_clock() {
