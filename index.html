@@ -4,13 +4,20 @@
     <meta charset="utf-8">
     <title>Weather in Älvsjö, Stockholm</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script id="script" src="script.js"></script>
-    <link id="style" rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js" integrity="sha256-srhz/t0GOrmVGZryG24MVDyFDYZpvUH2+dnJ8FbpGi0=" crossorigin="anonymous"></script>
-    <script>document.getElementById("script").src += "?s=" + (new Date()).getHours()</script>
-    <script>document.getElementById("style").href += "?s=" + (new Date()).getHours()</script>
+    <script>
+        var script = document.createElement("script");
+        script.src = "script.js?v=" + new Date().getTime();
+        document.head.appendChild(script);
+    </script>
+    <script>
+        var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "style.css?v=" + new Date().getTime();
+        document.head.appendChild(link);
+    </script>
 </head>
 <body>
     <script id="template" type="x-tmpl-mustache">
