@@ -1,0 +1,19 @@
+{
+  "name": "weatherapp",
+  "version": "1.0.0",
+  "description": "This repo generates the below widget from weather data. This type of widget is called a [meteogram](https://en.wikipedia.org/wiki/Meteogram).",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmilStenstrom/weatherapp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmilStenstrom/weatherapp/issues"
+  },
+  "homepage": "https://github.com/EmilStenstrom/weatherapp#readme"
+}
