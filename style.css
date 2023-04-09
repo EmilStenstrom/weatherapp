@@ -75,14 +75,11 @@ body {
         color: white;
         text-align: right;
         padding-right: 0.3em;
+        padding-bottom: 35px;
     }
         .label_time {
             margin-top: 5px;
             flex-grow: 1;
-        }
-        .label_uv {
-            padding-bottom: 9px;
-            margin-bottom: 36px;
         }
         .label_precipprob, .label_precipint {
             font-size: 0.8em;
@@ -115,7 +112,7 @@ body {
             }
         .precipprob, .precipint {
             color: #2C83C7;
-            font-size: 0.8em;
+            font-size: 0.7em;
             padding-bottom: 10px;
         }
         .uv-container {
