@@ -2,14 +2,14 @@
 var $ = document.querySelector.bind(document);
 
 function to_date(timestamp) {
-    if (typeof timestamp != 'number') {
-        throw new Error("timestamp: " + timestamp + " is a " + typeof timestamp + " not an number");
+    if (typeof timestamp != 'string') {
+        throw new Error("timestamp: " + timestamp + " is a " + typeof timestamp + " not an string");
     }
-    return new Date(timestamp * 1000);
+    return new Date(timestamp);
 }
-function to_time(date) {
+function to_time_string(date) {
     if (typeof date.getHours != 'function') {
-        throw new Error("date: " + date + " is a " + typeof date + " not an Date");
+        throw new Error("date: " + date + " is a " + typeof date + " not a Date");
     }
     var hours = ("0" + date.getHours()).substr(-2);
     var minutes = ("0" + date.getMinutes()).substr(-2);
@@ -21,7 +21,7 @@ var MONTHS = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Au
 
 function to_day(date) {
     if (typeof date.getHours != 'function') {
-        throw new Error("date: " + date + " is a " + typeof date + " not an Date");
+        throw new Error("date: " + date + " is a " + typeof date + " not a Date");
     }
     var day = (
         DAY_NAMES[date.getDay()] + ", " +
@@ -35,10 +35,10 @@ function to_percent(decimal) {
 }
 function is_same_day(date1, date2) {
     if (typeof date1.getMonth !== 'function') {
-        throw new Error("date1: " + date1 + " is not an Date");
+        throw new Error("date1: " + date1 + " is not a Date");
     }
     if (typeof date2.getMonth !== 'function') {
-        throw new Error("date2: " + date2 + " is not an Date");
+        throw new Error("date2: " + date2 + " is not a Date");
     }
     return (
         date1.getFullYear() == date2.getFullYear() &&
@@ -52,19 +52,20 @@ function is_same_hour(date1, date2) {
         date1.getHours() == date2.getHours()
     )
 }
-function is_daytime(current_hour, sunriseTime, sunsetTime) {
+function is_daytime(current_hour, sun) {
     if (typeof current_hour.getMonth !== 'function') {
-        throw new Error("current_hour: " + current_hour + " is not an Date");
+        throw new Error("current_hour: " + current_hour + " is not a Date");
     }
-    if (typeof sunriseTime.getMonth !== 'function') {
-        throw new Error("sunriseTime: " + sunriseTime + " is not an Date");
-    }
-    if (typeof sunsetTime.getMonth !== 'function') {
-        throw new Error("sunsetTime: " + sunsetTime + " is not an Date");
+    if (typeof sun[current_hour.toISOString().substring(0, 10)] !== 'object') {
+        throw new Error("sun: " + sun + " has the wrong format");
     }
 
     var next_hour = new Date(current_hour);
     next_hour.setHours(next_hour.getHours() + 1);
+
+    var today = current_hour.toISOString().substring(0, 10);
+    var sunriseTime = new Date(sun[today]['sunrise']);
+    var sunsetTime = new Date(sun[today]['sunset']);
 
     if (sunriseTime < current_hour && next_hour < sunsetTime) {
         return true;
@@ -73,10 +74,9 @@ function is_daytime(current_hour, sunriseTime, sunsetTime) {
 }
 
 // TEMPLATE HELPERS
-function template_helpers(weather) {
+function template_helpers() {
     return {
         "to_day": function() {
-            var today = weather.current_time;
             return function(text, render) {
                 var date = new Date(render(text));
                 var day = to_day(date);
@@ -89,8 +89,12 @@ function template_helpers(weather) {
         },
         "to_time": function() {
             return function(text, render) {
-                var date = new Date(render(text));
-                var [hours, minutes] = to_time(date);
+                var date_str = render(text);
+                if (!date_str) {
+                    throw new Error("to_time called with invalid date: " + date_str);
+                }
+                var date = new Date(date_str);
+                var [hours, minutes] = to_time_string(date);
                 var out = '<span class="hours">' + hours + '</span>:<span class="minutes">' + minutes + '</span>';
                 return '<time class="time" datetime="' + date.toISOString() + '">' + out + "</time>";
             }
@@ -101,11 +105,10 @@ function template_helpers(weather) {
             }
         },
         "temp_style": function() {
-            var high = weather.future.temperatureHigh;
-            var low = weather.future.temperatureLow;
             return function(text, render) {
-                var current = render(text)
-                var offset = Math.round(high - current) * 10;
+                var [min, current, max] = render(text).split(",")
+
+                var offset = Math.round(max - current) * 10;
                 return (
                     "padding-top: " + offset + "px;" +
                     "padding-bottom: " + (100 - offset) + "px;"
@@ -132,180 +135,154 @@ function transform_sunrise_and_sunset(daily) {
     return daily;
 }
 
-function transform_hourly(hourly, idx, len, daily, current_time) {
-    hourly = round_temp(hourly);
-    hourly = round_precip(hourly);
-    hourly = add_image(hourly, daily, current_time);
-    hourly = add_hour_marker(hourly, idx);
-    hourly = add_first_hour_marker(hourly, idx, len);
-    hourly = add_daytime_marker(hourly, daily);
-    hourly = add_sunset_and_sunrise_marker(hourly, daily);
-    return hourly;
-}
-function transform_time(hourly) {
-    if (typeof hourly.time != 'number') {
-        throw new Error("hourly.time: " + hourly.time + " is a " + typeof hourly.time + " not an number");
-    }
-    hourly.time = to_date(hourly.time);
-    return hourly;
-}
-function round_temp(hourly) {
-    hourly.temperature = Math.round(hourly.temperature);
-    return hourly;
-}
-function round_precip(hourly) {
-    hourly.precipIntensity = (
-        Math.floor(
-            hourly.precipIntensity * 10
-        ) / 10
-    );
-    return hourly;
-}
-function add_image(hourly, daily, current_time) {
-    var icon = hourly.icon;
-    var summary = hourly.summary;
-    var images = {
-        "clear-day": "clear.svg",
-        "clear-night": "clear.svg",
-        "cloudy": "cloudy.svg",
-        "fog": "fog.svg",
-        "partly-cloudy-day": (hourly => (hourly.cloudCover > 0.5? "mostlycloudy.svg": "partlycloudy.svg")),
-        "partly-cloudy-night": (hourly => (hourly.cloudCover > 0.5? "mostlycloudy.svg": "partlycloudy.svg")),
-        "rain": (hourly => (hourly.precipProbability > 0.5? "rain.svg": "chancerain.svg")),
-        "sleet": (hourly => (hourly.precipProbability > 0.5? "sleet.svg": "chancesleet.svg")),
-        "snow": (hourly => (hourly.precipProbability > 0.5? "snow.svg": "chancesnow.svg")),
-        "thunderstorm": "tstorms.svg",
-        "wind": "wind.svg",
-    };
 
-    var image = "unknown.svg"
-    if (icon in images) {
-        image = (
-            (typeof images[icon] === "function")?
-            images[icon](hourly):
-            images[icon]
-        );
-        if (!is_daytime(hourly.time, daily.sunriseTime, daily.sunsetTime)) {
-            image = "nt_" + image;
-        }
+function round_temp(temp) {
+    if (!temp) {
+        throw new Error("temp: " + temp + " is not a number");
+    }
+    return Math.round(temp);
+}
+function round_precip(precip) {
+    if (!precip) {
+        throw new Error("precip: " + precip + " is not a number");
+    }
+    return Math.floor(precip * 10) / 10;
+}
+
+// Copied from https://opendata.smhi.se/apidocs/metfcst/parameters.html#parameter-wsymb
+SMHI_SYMBOLS = {
+    1: "Clear sky",
+    2: "Nearly clear sky",
+    3: "Variable cloudiness",
+    4: "Halfclear sky",
+    5: "Cloudy sky",
+    6: "Overcast",
+    7: "Fog",
+    8: "Light rain showers",
+    9: "Moderate rain showers",
+    10: "Heavy rain showers",
+    11: "Thunderstorm",
+    12: "Light sleet showers",
+    13: "Moderate sleet showers",
+    14: "Heavy sleet showers",
+    15: "Light snow showers",
+    16: "Moderate snow showers",
+    17: "Heavy snow showers",
+    18: "Light rain",
+    19: "Moderate rain",
+    20: "Heavy rain",
+    21: "Thunder",
+    22: "Light sleet",
+    23: "Moderate sleet",
+    24: "Heavy sleet",
+    25: "Light snowfall",
+    26: "Moderate snowfall",
+    27: "Heavy snowfall",
+}
+SMHI_TO_IMAGE = {
+    "Clear sky":                "clear",
+    "Nearly clear sky":         "mostlysunny",
+    "Variable cloudiness":      "mostlysunny",
+    "Halfclear sky":            "mostlycloudy",
+    "Cloudy sky":               "cloudy",
+    "Overcast":                 "cloudy",
+    "Fog":                      "fog",
+    "Light rain showers":       "chancerain",
+    "Moderate rain showers":    "chancerain",
+    "Heavy rain showers":       "rain",
+    "Thunderstorm":             "tstorms",
+    "Light sleet showers":      "chancesleet",
+    "Moderate sleet showers":   "chancesleet",
+    "Heavy sleet showers":      "sleet",
+    "Light snow showers":       "chancesnow",
+    "Moderate snow showers":    "chancesnow",
+    "Heavy snow showers":       "snow",
+    "Light rain":               "chancerain",
+    "Moderate rain":            "rain",
+    "Heavy rain":               "rain",
+    "Thunder":                  "chancestorms",
+    "Light sleet":              "chancesleet",
+    "Moderate sleet":           "sleet",
+    "Heavy sleet":              "sleet",
+    "Light snowfall":           "chancesnow",
+    "Moderate snowfall":        "snow",
+    "Heavy snowfall":           "snow",
+}
+
+function pick_image(weather_symbol, wind, hour_is_daytime, current_time) {
+    var image_name = "unknown"
+
+    if (wind > 20) {
+        image_name = "wind";
+    }
+    else if (weather_symbol in SMHI_SYMBOLS && SMHI_SYMBOLS[weather_symbol] in SMHI_TO_IMAGE) {
+        image_name = SMHI_TO_IMAGE[SMHI_SYMBOLS[weather_symbol]];
     }
 
-    image_name = image.replace(".svg", "").replace("_", "-");
-    hourly.image = (
+    image = (hour_is_daytime? "dy_": "nt_") + image_name + ".svg";
+
+    return (
         '<img ' +
             'class="icon icon-' + image_name + '" ' +
             'src="icons/' + image + '?' + current_time.getTime() + '"' +
-            'alt="' + summary + '"' +
         '>'
     );
-    return hourly;
 }
-function add_first_hour_marker(hourly, idx, len) {
-    if (idx == 0) {
-        hourly.hourMarker = (hourly.hourMarker || "") + " first-hour-of-day";
-        hourly.first_hour_of_day = true;
-        hourly.day_span = len;
-    }
-    return hourly;
+
+function get_parameter(data, name) {
+    return data.filter(param => param.name == name).map(param => param.values[0]);
 }
-function add_hour_marker(hourly, idx) {
-    if (hourly.precipIntensity && hourly.precipProbability > 0.2) {
-        hourly.hourMarker = (hourly.hourMarker || "") + " precip";
+
+function transform_hourly(sun) {
+    function transform(hourly, idx) {
+        var date = to_date(hourly.validTime)
+        var hour_is_daytime = is_daytime(date, sun);
+        var date_sunrise = new Date(sun[date.toISOString().substring(0, 10)].sunrise);
+        var date_sunset = new Date(sun[date.toISOString().substring(0, 10)].sunset);
+        data = {
+            "time": date,
+            "temperature": round_temp(get_parameter(hourly.parameters, "t")),
+            "precipMean": round_precip(get_parameter(hourly.parameters, "pmean")),
+            "weatherSymbol": get_parameter(hourly.parameters, "Wsymb2"),
+            "windSpeed": get_parameter(hourly.parameters, "ws"),
+            "sunrise": is_same_hour(date, date_sunrise)? date_sunrise: "",
+            "sunset": is_same_hour(date, date_sunset)? date_sunset: "",
+            "hourMarker": (idx == 0)? "first-hour-of-day": "",
+            "dayMarker": hour_is_daytime? "day": "night",
+            "uvIndex": "X",  // Can this be calculated?!
+        }
+        data["image"] = pick_image(data["weatherSymbol"], data["windSpeed"], hour_is_daytime, date);
+        return data;
     }
-    else if (hourly.cloudCover < 0.5) {
-        hourly.hourMarker = (hourly.hourMarker || "") + " clear";
-    }
-    return hourly;
-}
-function add_daytime_marker(hourly, daily) {
-    if (is_daytime(hourly.time, daily.sunriseTime, daily.sunsetTime)) {
-        hourly.dayMarker = "day";
-    }
-    else {
-        hourly.dayMarker = "night";
-    }
-    return hourly;
-}
-function add_sunset_and_sunrise_marker(hourly, daily) {
-    if (is_same_hour(hourly.time, daily.sunriseTime)) {
-        hourly.sunrise = daily.sunriseTime;
-    }
-    if (is_same_hour(hourly.time, daily.sunsetTime)) {
-        hourly.sunset = daily.sunsetTime;
-    }
-    return hourly;
+    return transform;
 }
 
 function transform_data(weather) {
     var weather = Object.assign({}, weather);
-    var current_time = to_date(weather.currently.time);
+    var now = to_date(weather.approvedTime);
+    var hours_today = weather.timeSeries.filter(
+        hourly => is_same_day(to_date(hourly.validTime), now)
+    ).map(transform_hourly(weather.sun));
 
-    // Transform timestamp to Date first, to simplify code later
-    var current_data = Object.assign({}, weather.currently);
-    current_data = transform_time(current_data);
-    var hourly_data = Array.from(weather.hourly.data);
-    for (hourly of hourly_data) {
-        hourly = transform_time(hourly);
-    }
-    var daily_data = Array.from(weather.daily.data);
-
-    // Currently
-    var today_daily = transform_daily(daily_data[0]);
-    var current_data = transform_hourly(current_data, 0, 1, today_daily, current_time)
-
-    // Today
-    var today_hourly = Array.from(hourly_data);
-    today_hourly = today_hourly.filter(
-        hourly => is_same_day(current_time, hourly.time)
-    )
-    var len = today_hourly.length;
-    today_hourly = today_hourly.map(
-        (hourly, idx) => transform_hourly(hourly, idx, len, today_daily, current_time)
-    );
-
-    // Tomorrow
-    var tomorrow = new Date(current_time);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    var tomorrow_daily = transform_daily(daily_data[1]);
-    var tomorrow_hourly = Array.from(hourly_data);
-    tomorrow_hourly = tomorrow_hourly.filter(
-        hourly => is_same_day(tomorrow, hourly.time)
-    )
-    var len = tomorrow_hourly.length;
-    tomorrow_hourly = tomorrow_hourly.map(
-        (hourly, idx) => transform_hourly(hourly, idx, len, tomorrow_daily, current_time)
-    );
-
-    hourly = today_hourly.concat(tomorrow_hourly);
-    hourly = hourly.slice(0, 24);
+    var hours_all = weather.timeSeries.slice(0, 36).map(transform_hourly(weather.sun));
 
     return {
-        "cache_bust": current_time.getTime(),
+        "cache_bust": now,
         "current": {
-            "time": current_time,
-            "temperatureHigh": Math.max(...today_hourly.map(
-                data => data.temperature
-            )),
-            "temperatureLow": Math.min(...today_hourly.map(
-                data => data.temperature
-            )),
-            ...current_data,
+            "time": now,
+            "temperatureMax": Math.max(...hours_today.map(hourly => hourly.temperature)),
+            "temperatureMin": Math.min(...hours_today.map(hourly => hourly.temperature)),
+            "temperature": hours_today[0].temperature,
+            "image": pick_image(
+                hours_today[0].weatherSymbol,
+                hours_today[0].windSpeed,
+                is_daytime(now, weather.sun),
+                now,
+            ),
         },
         "future": {
-            "temperatureHigh": Math.max(...hourly.map(
-                hourly_data => hourly_data.temperature
-            )),
-            "temperatureLow": Math.min(...hourly.map(
-                hourly_data => hourly_data.temperature
-            )),
-            "precipHigh": Math.max(...hourly.map(
-                hourly_data => hourly_data.precipIntensity
-            )),
-            "precipLow": Math.min(...hourly.map(
-                hourly_data => hourly_data.precipIntensity
-            )),
-            "hourly": hourly
+            "hasPrecip": Math.max(...hours_all.map(hourly => hourly.precipMean)),
+            "hourly": hours_all,
         }
     };
 }
@@ -317,7 +294,7 @@ function show_weather(weather) {
     Mustache.parse(template);
     var rendered = Mustache.render(
         template,
-        {...data, ...template_helpers(data)}
+        {...data, ...template_helpers()}
     );
     document.body.innerHTML += rendered;
 }
@@ -360,7 +337,7 @@ function load_graphs(urls) {
             return response.json();
         })
         .then(function(weather) {
-            cache_bust(weather.currently.time);
+            cache_bust(weather.approvedTime);
             show_weather(weather);
         })
         .then(function(){
@@ -383,7 +360,7 @@ function init_clock() {
     function update_clock() {
         var clock = $(".current-clock");
         var date = new Date();
-        var [hours, minutes] = to_time(date);
+        var [hours, minutes] = to_time_string(date);
         var new_time_str = hours + ":" + minutes;
         var old_time_str = clock.innerHTML.trim();
         if (new_time_str != old_time_str) {

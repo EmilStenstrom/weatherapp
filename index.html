@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Weather in Liljeholmen, Stockholm</title>
+    <title>Weather in Älvsjö, Stockholm</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script id="main" src="script.js"></script>
     <link id="main" rel="stylesheet" href="style.css"></link>
@@ -32,17 +32,13 @@
             <div class="container-hourly">
                 <div class="labels">
                     <label class="label_time">kl</label>
-                    {{# future.precipHigh }}
-                        <label class="label_precipprob">
-                            %
-                            <img src="icons/drop.svg?{{ cache_bust }}" alt="drop" height="10" width="10">
-                        </label>
+                    {{# future.hasPrecip }}
                         <label class="label_precipint">
                             mm
                             <img src="icons/drop.svg?{{ cache_bust }}" alt="drop" height="10" width="10">
                         </label>
-                    {{/ future.precipHigh }}
-                    <label class="label_uv">UV</label>
+                    {{/ future.hasPrecip }}
+                    <!-- <label class="label_uv">UV</label> -->
                 </div>
                 {{# future.hourly }}
                     <div class="hour {{ hourMarker }} {{ dayMarker }} {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
@@ -50,37 +46,36 @@
                             <div class="time-container">
                                 {{# to_time }}{{ time }}{{/ to_time }}
                             </div>
-                            <div class="temp-container" style="{{# temp_style }}{{ temperature }}{{/ temp_style }}">
+                            <div class="temp-container" style="
+                                {{# temp_style }}
+                                    {{ current.temperatureMin }},{{ temperature }},{{ current.temperatureMax }}
+                                {{/ temp_style }}
+                            ">
                                 {{& image }}
                                 <div class="temp">
                                     {{ temperature }}°
                                 </div>
                             </div>
-                            <div class="precipprob">
-                                {{# precipIntensity }}
-                                    {{# to_percent }}{{ precipProbability }}{{/ to_percent }}
-                                {{/ precipIntensity }}
-                            </div>
                             <div class="precipint">
-                                {{# precipIntensity }}
-                                    {{ precipIntensity }}
-                                {{/ precipIntensity }}
+                                {{# precipMean }}
+                                    {{ precipMean }}
+                                {{/ precipMean }}
                             </div>
-                            <div class="uv-container">
+                            <!-- <div class="uv-container">
                                 <span class="uv uv{{ uvIndex }}">
                                     {{ uvIndex }}
                                 </span>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="sun {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
                             {{# sunrise }}
                                 <span class="direction">↑</span>
-                                <img src="icons/sunny.svg?{{ cache_bust }}" height="20" width="20">
+                                <img src="icons/dy_sunny.svg?{{ cache_bust }}" height="20" width="20">
                                 {{# to_time }}{{ sunrise }}{{/ to_time }}
                             {{/ sunrise }}
                             {{# sunset }}
                                 <span class="direction">↓</span>
-                                <img src="icons/sunny.svg?{{ cache_bust }}" height="20" width="20">
+                                <img src="icons/dy_sunny.svg?{{ cache_bust }}" height="20" width="20">
                                 {{# to_time }}{{ sunset }}{{/ to_time }}
                             {{/ sunset }}
                         </div>
@@ -90,8 +85,8 @@
             <p class="footer">
                 Senast uppdaterad {{# to_time }}{{ current.time }}{{/ to_time }}
                 <br>
-                <a href="https://darksky.net/poweredby/" class="attribution">
-                    Powered by Dark Sky
+                <a href="https://opendata.smhi.se/apidocs/metfcst/" class="attribution">
+                    Powered by SMHI
                 </a>
             </p>
         </div>
