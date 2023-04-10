@@ -125,7 +125,8 @@ body {
                 color: black;
                 font-weight: bold;
             }
-            .uv0, .uv1, .uv2 { background: rgb(179,229,179); }
+            .uv0 { visibility: hidden; }
+            .uv1, .uv2 { background: rgb(179,229,179); }
             .uv3, .uv4, .uv5 { background: rgb(255,249,153); }
             .uv6, .uv7 { background: rgb(255,217,179); }
             .uv8, .uv9, .uv10 { background: rgb(255,153,153); }

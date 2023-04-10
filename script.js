@@ -233,9 +233,10 @@ function get_parameter(data, name) {
     return data.filter(param => param.name == name).map(param => param.values[0]);
 }
 
-function transform_hourly(sun) {
+function transform_hourly(sun, uv) {
     function transform(hourly, idx) {
         var date = to_date(hourly.validTime)
+        var date_str = date.toISOString().replace("Z", "+00:00").replace(".000", "");
         var hour_is_daytime = is_daytime(date, sun);
         var date_sunrise = new Date(sun[date.toISOString().substring(0, 10)].sunrise);
         var date_sunset = new Date(sun[date.toISOString().substring(0, 10)].sunset);
@@ -249,7 +250,7 @@ function transform_hourly(sun) {
             "sunset": is_same_hour(date, date_sunset)? date_sunset: "",
             "hourMarker": (idx == 0)? "first-hour-of-day": "",
             "dayMarker": hour_is_daytime? "day": "night",
-            "uvIndex": "X",  // Can this be calculated?!
+            "uvIndex": uv[date_str],
         }
         data["image"] = pick_image(data["weatherSymbol"], data["windSpeed"], hour_is_daytime, date);
         return data;
@@ -260,7 +261,9 @@ function transform_hourly(sun) {
 function transform_data(weather) {
     var weather = Object.assign({}, weather);
     var now = to_date(weather.approvedTime);
-    var hours_all = weather.timeSeries.slice(0, 36).map(transform_hourly(weather.sun));
+    var hours_all = weather.timeSeries.slice(0, 36).map(
+        transform_hourly(weather.sun, weather.uv)
+    );
 
     return {
         "cache_bust": now,

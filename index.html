@@ -47,7 +47,7 @@
                             <img src="icons/drop.svg?{{ cache_bust }}" alt="drop" height="10" width="10">
                         </label>
                     {{/ future.hasPrecip }}
-                    <!-- <label class="label_uv">UV</label> -->
+                    <label class="label_uv">UV</label>
                 </div>
                 {{# future.hourly }}
                     <div class="hour {{ hourMarker }} {{ dayMarker }} {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
@@ -70,11 +70,11 @@
                                     {{ precipMean }}
                                 {{/ precipMean }}
                             </div>
-                            <!-- <div class="uv-container">
+                            <div class="uv-container">
                                 <span class="uv uv{{ uvIndex }}">
                                     {{ uvIndex }}
                                 </span>
-                            </div> -->
+                            </div>
                         </div>
                         <div class="sun {{# sunrise }}sunrise{{/ sunrise }} {{# sunset }}sunset{{/ sunset }}">
                             {{# sunrise }}
