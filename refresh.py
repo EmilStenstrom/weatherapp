@@ -76,25 +76,39 @@ def main():
     weather_path = env_or_error("WEATHER_PATH", r"[\w\\\/]+", default="weather/weather.json")
     location = env_or_error("LOCATION", r"^\-?\d+\.\d+,\-?\d+\.\d+?$", default="59.283329,17.991245")
     lat, lon = location.split(",")
+
+    data = get_forecast(weather_path, lat, lon, debug)
+    reference_time = datetime.fromisoformat(data["referenceTime"])
+    data["sun"] = get_sun_data(reference_time, lat, lon)
+
+    data = dict(sorted(data.items()))
+
+    data_str = json.dumps(data, indent=4)
+    if not data_str:
+        raise Exception("Empty data returned")
+
+    with open(weather_path, "w+") as f:
+        f.write(data_str)
+
+def get_forecast(weather_path, lat, lon, debug=False):
     url = f"https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{lon}/lat/{lat}/data.json"
-
     check_existing_file(weather_path, debug=debug)
-
     os.makedirs(os.path.dirname(weather_path), exist_ok=True)
-
-    print(f"Fetching new data from: {url}")
+    print(f"Fetching weather data from: {url}")
     response = requests.get(url, allow_redirects=False)
     check_status(response)
     data = response.json()
+    return data
 
-    # Also get sunrise and sunset data
+# Sunrise and sunset data
+def get_sun_data(reference_time, lat, lon):
     dates = [
-        datetime.fromisoformat(data["referenceTime"]) + timedelta(days=i)
-        for i in range(5)
+        reference_time + timedelta(days=i)
+        for i in range(3)
     ]
 
     from sun import Sun
-    data["sun"] = {}
+    sun_data = {}
     for date_ in dates:
         sun = Sun(date_, float(lat), float(lon))
         sunrise_time = sun.sunrise()
@@ -109,18 +123,12 @@ def main():
             minute=sunset_time.minute,
             second=sunset_time.second,
         )
-        data["sun"][date_.date().isoformat()] = {
+        sun_data[date_.date().isoformat()] = {
             "sunrise": sunrise.isoformat(),
             "sunset": sunset.isoformat(),
         }
 
-    data_str = json.dumps(dict(sorted(data.items())), indent=4)
-    if not data_str:
-        raise Exception("Empty data returned")
-
-    with open(weather_path, "w+") as f:
-        f.write(data_str)
-
+    return sun_data
 
 if __name__ == '__main__':
     main()
