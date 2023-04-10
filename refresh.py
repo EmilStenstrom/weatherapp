@@ -80,6 +80,7 @@ def main():
     data = get_forecast(weather_path, lat, lon, debug)
     reference_time = datetime.fromisoformat(data["referenceTime"])
     data["sun"] = get_sun_data(reference_time, lat, lon)
+    data["uv"] = get_uv_data(reference_time, lat, lon)
 
     data = dict(sorted(data.items()))
 
@@ -129,6 +130,24 @@ def get_sun_data(reference_time, lat, lon):
         }
 
     return sun_data
+
+# UV data from a non-official API
+def get_uv_data(reference_time, lat, lon):
+    url = "https://www.stralsakerhetsmyndigheten.se/api/v1/suntime/calculate"
+    uvindex_data = {}
+    for i in range(36):
+        date_ = reference_time + timedelta(hours=i)
+        print(f"Fetching UV data from: {url}")
+        response = requests.post(url, json={
+            "dateStr": date_.date().isoformat(),
+            "hour": str(date_.hour),
+            "latitude": lat,
+            "skintypeId": "4",  # Note: Not used for uvIndex value
+        }, allow_redirects=False)
+        check_status(response)
+        uvindex_data[date_.isoformat()] = response.json()["result"]["uvIndex"]
+
+    return uvindex_data
 
 if __name__ == '__main__':
     main()
