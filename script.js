@@ -260,30 +260,23 @@ function transform_hourly(sun) {
 function transform_data(weather) {
     var weather = Object.assign({}, weather);
     var now = to_date(weather.approvedTime);
-    var hours_today = weather.timeSeries.filter(
-        hourly => is_same_day(to_date(hourly.validTime), now)
-    ).map(transform_hourly(weather.sun));
-    if (hours_today.length == 0) {
-        hours_today = [weather.timeSeries[0]].map(transform_hourly(weather.sun));
-    }
-
     var hours_all = weather.timeSeries.slice(0, 36).map(transform_hourly(weather.sun));
 
     return {
         "cache_bust": now,
         "current": {
             "time": now,
-            "temperatureMax": Math.max(...hours_all.map(hourly => hourly.temperature)),
-            "temperatureMin": Math.min(...hours_all.map(hourly => hourly.temperature)),
-            "temperature": hours_today[0].temperature,
+            "temperature": hours_all[0].temperature,
             "image": pick_image(
-                hours_today[0].weatherSymbol,
-                hours_today[0].windSpeed,
+                hours_all[0].weatherSymbol,
+                hours_all[0].windSpeed,
                 is_daytime(now, weather.sun),
                 now,
             ),
         },
         "future": {
+            "temperatureMax": Math.max(...hours_all.map(hourly => hourly.temperature)),
+            "temperatureMin": Math.min(...hours_all.map(hourly => hourly.temperature)),
             "hasPrecip": Math.max(...hours_all.map(hourly => hourly.precipMean)),
             "hourly": hours_all,
         }
