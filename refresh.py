@@ -135,7 +135,7 @@ def get_sun_data(reference_time, lat, lon):
 def get_uv_data(reference_time, lat, lon):
     url = "https://www.stralsakerhetsmyndigheten.se/api/v1/suntime/calculate"
     uvindex_data = {}
-    for i in range(36):
+    for i in range(36 + 1):
         date_ = reference_time + timedelta(hours=i)
         print(f"Fetching UV data from: {url}")
         response = requests.post(url, json={
