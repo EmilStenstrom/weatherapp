@@ -60,14 +60,11 @@ function is_daytime(current_hour, sun) {
         throw new Error("sun: " + sun + " has the wrong format");
     }
 
-    var next_hour = new Date(current_hour);
-    next_hour.setHours(next_hour.getHours() + 1);
-
     var today = current_hour.toISOString().substring(0, 10);
     var sunriseTime = new Date(sun[today]['sunrise']);
     var sunsetTime = new Date(sun[today]['sunset']);
 
-    if (sunriseTime < current_hour && next_hour < sunsetTime) {
+    if (sunriseTime < current_hour && current_hour < sunsetTime) {
         return true;
     }
     return false;
