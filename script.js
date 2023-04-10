@@ -263,6 +263,9 @@ function transform_data(weather) {
     var hours_today = weather.timeSeries.filter(
         hourly => is_same_day(to_date(hourly.validTime), now)
     ).map(transform_hourly(weather.sun));
+    if (hours_today.length == 0) {
+        hours_today = [weather.timeSeries[0]].map(transform_hourly(weather.sun));
+    }
 
     var hours_all = weather.timeSeries.slice(0, 36).map(transform_hourly(weather.sun));
 
@@ -270,8 +273,8 @@ function transform_data(weather) {
         "cache_bust": now,
         "current": {
             "time": now,
-            "temperatureMax": Math.max(...hours_today.map(hourly => hourly.temperature)),
-            "temperatureMin": Math.min(...hours_today.map(hourly => hourly.temperature)),
+            "temperatureMax": Math.max(...hours_all.map(hourly => hourly.temperature)),
+            "temperatureMin": Math.min(...hours_all.map(hourly => hourly.temperature)),
             "temperature": hours_today[0].temperature,
             "image": pick_image(
                 hours_today[0].weatherSymbol,
