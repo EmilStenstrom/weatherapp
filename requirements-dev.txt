@@ -14,14 +14,16 @@ click==8.1.3
     # via pip-tools
 flake8==6.0.0
     # via -r requirements-dev.in
-gunicorn==20.1.0
+gunicorn==22.0.0
     # via -r requirements.in
 idna==3.4
     # via requests
 mccabe==0.7.0
     # via flake8
 packaging==23.0
-    # via build
+    # via
+    #   build
+    #   gunicorn
 pip-tools==6.13.0
     # via -r requirements-dev.in
 pycodestyle==2.10.0
