@@ -8,14 +8,13 @@ certifi==2023.7.22
     # via requests
 charset-normalizer==3.1.0
     # via requests
-gunicorn==20.1.0
+gunicorn==22.0.0
     # via -r requirements.in
 idna==3.4
     # via requests
+packaging==24.0
+    # via gunicorn
 requests==2.31.0
     # via -r requirements.in
 urllib3==1.26.18
     # via requests
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
