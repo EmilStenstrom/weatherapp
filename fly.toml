@@ -1,4 +1,4 @@
-app = "weatherapp-emilstenstrom"
+app = "alvsjo-weather"
 primary_region = "arn"
 
 [build]
