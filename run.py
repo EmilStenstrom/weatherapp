@@ -11,7 +11,7 @@ def run():
     os.system(command)
 
 def deploy():
-    os.system("git push dokku master")
+    os.system("fly deploy")
 
 def dependencies():
     os.system("pip-compile --upgrade requirements.in")

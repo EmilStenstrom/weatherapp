@@ -1,0 +1,10 @@
+.git
+.gitignore
+.python-version
+__pycache__
+*.py[cod]
+weather
+requirements-dev.in
+requirements-dev.txt
+tests
+
