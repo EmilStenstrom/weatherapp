@@ -86,6 +86,10 @@ body {
             padding-bottom: 10px;
             white-space: nowrap;
         }
+        .label_uv {
+            font-size: 0.9em;
+            padding: 1px 0 10px;
+        }
     .color-block {
         display: flex;
         flex-direction: column;

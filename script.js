@@ -237,6 +237,7 @@ function transform_hourly(sun, uv) {
         var hour_is_daytime = is_daytime(date, sun);
         var date_sunrise = new Date(sun[date.toISOString().substring(0, 10)].sunrise);
         var date_sunset = new Date(sun[date.toISOString().substring(0, 10)].sunset);
+        var uv_index = uv[date_str];
         data = {
             "time": date,
             "temperature": round_temp(get_parameter(hourly.parameters, "t")),
@@ -247,7 +248,7 @@ function transform_hourly(sun, uv) {
             "sunset": is_same_hour(date, date_sunset)? date_sunset: "",
             "hourMarker": (idx == 0)? "first-hour-of-day": "",
             "dayMarker": hour_is_daytime? "day": "night",
-            "uvIndex": uv[date_str],
+            "uvIndex": uv_index === undefined? "": Math.round(uv_index),
         }
         data["image"] = pick_image(data["weatherSymbol"], data["windSpeed"], hour_is_daytime, date);
         return data;

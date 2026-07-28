@@ -1,9 +1,18 @@
+import json
 import unittest
 from datetime import datetime
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import Mock, patch
 from zoneinfo import ZoneInfo
 
-from refresh import get_uv_data, normalize_forecast, normalize_uv_forecast
+from refresh import (
+    check_existing_file,
+    get_forecast,
+    get_uv_data,
+    normalize_forecast,
+    normalize_uv_forecast,
+)
 
 
 class NormalizeForecastTests(unittest.TestCase):
@@ -88,6 +97,44 @@ class NormalizeUvForecastTests(unittest.TestCase):
             params={"offset": -2},
             allow_redirects=False,
         )
+
+
+class RefreshCacheTests(unittest.TestCase):
+    def test_skips_a_recent_forecast(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "weather.json"
+            path.write_text(json.dumps({
+                "approvedTime": datetime.now(ZoneInfo("UTC")).isoformat(),
+            }))
+
+            self.assertFalse(check_existing_file(path, debug=False))
+
+    @patch("refresh.requests.get")
+    def test_force_fetches_despite_a_recent_forecast(self, get):
+        get.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "createdTime": "2026-07-28T10:31:15Z",
+                "referenceTime": "2026-07-28T10:15:00Z",
+                "geometry": {"type": "Point", "coordinates": [18.0, 59.2]},
+                "timeSeries": [],
+            },
+        )
+
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "weather.json"
+            path.write_text(json.dumps({
+                "approvedTime": datetime.now(ZoneInfo("UTC")).isoformat(),
+            }))
+            result = get_forecast(
+                str(path),
+                "59.2",
+                "18.0",
+                force=True,
+            )
+
+        self.assertEqual(result["approvedTime"], "2026-07-28T10:31:15Z")
+        get.assert_called_once()
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
+import argparse
 from textwrap import dedent, indent
 import json
 import os
 import re
-import sys
 from datetime import datetime, timedelta
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
@@ -43,18 +43,18 @@ def check_status(response):
 def check_existing_file(path, debug):
     if not os.path.isfile(path):
         log(f"Fetching new data, file ({path}) does not exist", debug)
-        return
+        return True
 
     if os.path.getsize(path) == 0:
         log(f"Fetching new data, file exists ({path}), but is empty", debug)
-        return
+        return True
 
     with open(path, "r") as f:
         data = json.load(f)
 
     if "error" in data:
         log("Error in last fetched data, try again", debug)
-        return
+        return True
 
     # Get local time in UTC
     local_dt = datetime.now(ZoneInfo("UTC"))
@@ -65,23 +65,36 @@ def check_existing_file(path, debug):
     # Was the data fetched less than one hour ago?
     if local_dt < response_dt + timedelta(minutes=59):
         print(f"Will not fetch, data is less than 1 hour old ({response_dt})")
-        sys.exit()
+        return False
 
     log(f"Fetching new data, data is old ({response_dt})", debug)
 
-    return
+    return True
 
 def log(message, debug):
     if debug:
         print(message)
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Fetch weather and UV forecasts.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Fetch new data even when the existing forecast is less than one hour old.",
+    )
+    args = parser.parse_args(argv)
+
     debug = (env_or_error("DEBUG", r"true", default="false") == "true")
     weather_path = env_or_error("WEATHER_PATH", r"[\w\\\/]+", default="weather/weather.json")
     location = env_or_error("LOCATION", r"^\-?\d+\.\d+,\-?\d+\.\d+?$", default="59.283329,17.991245")
     lat, lon = location.split(",")
 
-    data = get_forecast(weather_path, lat, lon, debug)
+    data = get_forecast(weather_path, lat, lon, debug, force=args.force)
+    if data is None:
+        return
+
     reference_time = datetime.fromisoformat(data["referenceTime"])
     data["sun"] = get_sun_data(reference_time, lat, lon)
     data["uv"] = get_uv_data(reference_time)
@@ -95,12 +108,14 @@ def main():
     with open(weather_path, "w+") as f:
         f.write(data_str)
 
-def get_forecast(weather_path, lat, lon, debug=False):
+def get_forecast(weather_path, lat, lon, debug=False, force=False):
     url = (
         "https://opendata-download-metfcst.smhi.se/api/category/"
         f"snow1g/version/1/geotype/point/lon/{lon}/lat/{lat}/data.json"
     )
-    check_existing_file(weather_path, debug=debug)
+    if not force and not check_existing_file(weather_path, debug=debug):
+        return None
+
     os.makedirs(os.path.dirname(weather_path), exist_ok=True)
     print(f"Fetching weather data from: {url}")
     response = requests.get(url, allow_redirects=False)

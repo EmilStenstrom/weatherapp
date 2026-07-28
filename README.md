@@ -18,3 +18,6 @@ This repo generates the below widget from weather data. This type of widget is c
 * Forecast data is fetched at most once per hour.
 * UV data is fetched for `Sverige (Stockholm)` by default. Set `UV_LOCATION`
   and `UV_TIMEZONE` together to use another location offered by SSM.
+
+Run `python refresh.py --force` to fetch new data even when the existing
+forecast is less than one hour old.
